@@ -28,6 +28,10 @@ fastapi-crud-app/
 │       ├── get_user.py     # GET endpoint
 │       ├── update_user.py   # PATCH endpoint
 │       └── delete_user.py   # DELETE endpoint
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
+├── .env.example
 ├── requirements.txt
 ├── README.md
 ```
@@ -51,6 +55,17 @@ pip install fastapi uvicorn
 
 # Running the App
 uvicorn app.main:app --reload
+
+# Docker Setup
+
+# 1.Build Docker Image
+docker build -t fastapi-crud-app .
+
+# 2.Run Docker Container
+docker run -d -p 8000:8000 --name fastapi-container fastapi-crud-app
+
+# 3.Alternatively, Use Docker Compose
+docker-compose up --build
 
 # Validation & Error Handling
 | Input Field | Validation                                      | Error Message                          |
