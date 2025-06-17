@@ -1,0 +1,16 @@
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore venv
+venv/
+
+# Ignore .env file (secrets)
+.env
+
+# Ignore OS files
+.DS_Store
+
+# Ignore __pycache__ in subfolders
+app/__pycache__/
+app/routes/__pycache__/
