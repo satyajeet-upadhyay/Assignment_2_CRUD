@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.routes import create_user, get_user, update_user, delete_user, auth_check
-from app.auth import users
+from app.auth_middleware import users
 from fastapi.responses import JSONResponse
 from fastapi import Request
 from pydantic import ValidationError
