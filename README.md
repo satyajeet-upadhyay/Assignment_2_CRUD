@@ -1,6 +1,6 @@
 # FastAPI CRUD Application
 
-A basic CRUD API built using FastAPI, demonstrating modular route handling, validation, and clean branching workflow.
+A basic CRUD API built using FastAPI, demonstrating modular route handling, validation, **JWT authentication** and clean branching workflow.
 
 # Team Members
 - Satyajeet Upadhyay
@@ -12,6 +12,7 @@ A basic CRUD API built using FastAPI, demonstrating modular route handling, vali
 - **Get Users (GET)** → List all users
 - **Update User (PATCH)** → Update name for an existing phone
 - **Delete User (DELETE)** → Remove user by phone number
+- **JWT Authentication** → `/signup`, `/login` to generate user-access token
 - **Validation & Error Handling**:
   - Phone number must be **exactly 10 digits** (no letters, no special characters)
   - Name must be **alphabetic only** (e.g., `Satyajeet`, not `Satyaje4t`)
@@ -20,14 +21,19 @@ A basic CRUD API built using FastAPI, demonstrating modular route handling, vali
 ```
 fastapi-crud-app/
 ├── app/
-│   ├── main.py
-│   ├── db.py
-│   ├── models.py
-│   └── routes/
-│       ├── create_user.py   # POST endpoint
-│       ├── get_user.py     # GET endpoint
-│       ├── update_user.py   # PATCH endpoint
-│       └── delete_user.py   # DELETE endpoint
+│ ├── main.py
+│ ├── db.py
+│ ├── models.py
+│ ├── routes/
+| | ├── auth_check.py # POST
+│ │ ├── create_user.py # POST
+│ │ ├── get_user.py # GET
+│ │ ├── update_user.py # PATCH
+│ │ └── delete_user.py # DELETE
+│ └── auth_middleware/
+│ ├── jwt_handler.py
+│ ├── auth_bearer.py
+│ └── users.py # Signup/Login routes
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .dockerignore
@@ -50,8 +56,8 @@ pip install fastapi uvicorn
 # Branching Workflow
 | Branch Name     | Description                                                       |
 | --------------- | ----------------------------------------------------------------- |
-| `dev/satyajeet` | Created **POST** and **DELETE** routes, `main.py`                 |
-| `dev/sourav`    | Created **PATCH** and **GET** routes, `models.py` with validation |
+| `dev/satyajeet` | Created **POST** and **DELETE** routes, `main.py`, `jwt_handler.py`, `auth_bearer.py`.                 |
+| `dev/sourav`    | Created **PATCH** and **GET** routes, `models.py` with validation, `login & signup routes`, `auth_check.py`  |
 
 # Running the App
 uvicorn app.main:app --reload
@@ -74,13 +80,16 @@ docker-compose up --build
 | `name`      | Must contain **alphabets only** (e.g., `Alice`) | `"Please enter a valid name."`         |
 
 # API Endpoints
-| Method | Endpoint         | Description          |
-| ------ | ---------------- | -------------------- |
-| POST   | `/users`         | Create a new user    |
-| GET    | `/users`         | List all users       |
-| PATCH  | `/users/{phone}` | Update user name     |
-| DELETE | `/users/{phone}` | Delete user by phone |
 
+| Method | Endpoint         | Description                   |
+| ------ | ---------------- | ----------------------------- |
+| POST   | `/signup`        | Register a new user account   |
+| POST   | `/login`         | Authenticate & get JWT token  |
+| POST   | `/users`         | Create a new user     |
+| GET    | `/users`         | List all users       |
+| PATCH  | `/users/{phone}` | Update user name    |
+| DELETE | `/users/{phone}` | Delete user by phone |
+| POST   | `/secure-endpoint` |Requires Authentication |
 #
 
 
