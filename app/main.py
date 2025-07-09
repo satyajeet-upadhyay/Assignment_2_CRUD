@@ -1,30 +1,28 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+
 from app.routes import create_user, get_user, update_user, delete_user, auth_check
 from app.auth_middleware import users
-from fastapi.responses import JSONResponse
-from fastapi import Request
-from pydantic import ValidationError
-from fastapi.exceptions import RequestValidationError
 
 app = FastAPI()
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    errors = exc.errors()
-    for err in errors:
-        loc = err.get("loc")[-1]
-        if loc == "phone":
-            return JSONResponse(status_code=422, content={"detail": "Please enter a valid phone number."})
-        elif loc == "name":
-            return JSONResponse(status_code=422, content={"detail": "Please enter a valid name."})
-
+async def handle_validation_error(request: Request, exc: RequestValidationError):
+    for error in exc.errors():
+        field = error.get("loc")[-1]
+        if field in {"phone", "name"}:
+            return JSONResponse(
+                status_code=422,
+                content={"detail": f"Please enter a valid {field}."}
+            )
     return JSONResponse(status_code=422, content={"detail": "Invalid input."})
 
-# Include all routers
 app.include_router(users.router)
 app.include_router(create_user.router)
 app.include_router(get_user.router)
 app.include_router(update_user.router)
 app.include_router(delete_user.router)
 app.include_router(auth_check.router)
+
 
